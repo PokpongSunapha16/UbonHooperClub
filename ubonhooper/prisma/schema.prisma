@@ -66,8 +66,8 @@ model Review {
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt  // ✅ เพิ่ม field นี้เพื่อให้รองรับการแก้ไขรีวิว
 
-  reviewed_user User @relation("UserReviews", fields: [reviewed_user_id], references: [id])
-  reviewer_user User @relation("UserReviewers", fields: [reviewer_user_id], references: [id])
+  reviewed_user User @relation("UserReviews", fields: [reviewed_user_id], references: [id], onDelete: Cascade)
+  reviewer_user User @relation("UserReviewers", fields: [reviewer_user_id], references: [id], onDelete: Cascade)
 
   @@unique([reviewed_user_id, reviewer_user_id]) // ✅ ป้องกันการรีวิวซ้ำ
 }
@@ -130,7 +130,7 @@ model Team {
   id         Int @id @default(autoincrement())
   created_by Int
 
-  creator     User     @relation("UserTeams", fields: [created_by], references: [id])
+  creator     User     @relation("UserTeams", fields: [created_by], references: [id], onDelete: Cascade)
   created_at  DateTime @default(now())
   name        String   @unique @db.VarChar(255)
   team_logo   String?  @db.Text
@@ -169,7 +169,7 @@ model TeamMember {
   teamId    Int
   userId    Int
   team      Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user      User         @relation(fields: [userId], references: [id])
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   joined_at DateTime     @default(now())
   status    MemberStatus @default(PENDING)
   role      TeamRole     @default(PLAYER)
@@ -188,8 +188,8 @@ model Notification {
   createdAt  DateTime           @default(now())
   expiresAt  DateTime? // กำหนดวันหมดอายุของการแจ้งเตือน
 
-  sender   User  @relation("SenderNotifications", fields: [senderId], references: [id])
-  receiver User  @relation("ReceiverNotifications", fields: [receiverId], references: [id])
+  sender   User  @relation("SenderNotifications", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User  @relation("ReceiverNotifications", fields: [receiverId], references: [id], onDelete: Cascade)
   team     Team? @relation("TeamNotifications", fields: [teamId], references: [id], onDelete: Cascade)
 }
 
